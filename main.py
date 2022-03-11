@@ -1,4 +1,3 @@
-import smtplib
 from functools import wraps
 from flask import Flask, render_template, redirect, url_for, flash, request, abort
 from flask_bootstrap import Bootstrap
@@ -12,9 +11,6 @@ from flask_login import UserMixin, login_user, LoginManager, login_required, cur
 from forms import CreatePostForm, RegisterForm, LoginForm, CommentForm
 from flask_gravatar import Gravatar
 import os
-
-MY_EMAIL = "pythontest1164@gmail.com"
-MY_PASSWORD = "pythontester0#"
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = '8BYkEfBA6O6donzWlSihBXox7C0sKR6b'
@@ -178,23 +174,11 @@ def about():
     return render_template("about.html", current_user=current_user)
 
 
-@app.route("/contact", methods=["GET", "POST"])
+@app.route("/contact")
 def contact():
-    if request.method == 'POST':
-        name = request.form["name"]
-        email = request.form["email"]
-        phone = request.form["phone"]
-        message = request.form["message"]
-        send_email(name=name, email=email, phone=phone, message=message)
-        return render_template("contact.html", msg_sent=True)
-    return render_template("contact.html", msg_sent=False)
+    return render_template("contact.html", current_user=current_user)
 
-def send_email(name, email, phone, message):
-    email_message = f"Subject:New Message\n\nName: {name}\nEmail: {email}\nPhone: {phone}\nMessage:{message}"
-    with smtplib.SMTP("smtp.gmail.com", port=587, timeout=120) as connection:
-        connection.starttls()
-        connection.login(MY_EMAIL, MY_PASSWORD)
-        connection.sendmail(from_addr=email, to_addrs=MY_EMAIL, msg=email_message)
+
 @app.route("/new-post", methods=["GET", "POST"])
 @admin_only
 def add_new_post():
